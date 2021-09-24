@@ -1,0 +1,21 @@
+import setuptools
+
+
+setuptools.setup(
+    name='Oemer',
+    version='0.1.0',
+    author='Meteo Corp.',
+    author_email='contact@meteo.com.tw',
+    description='End-to-end Optical Music Recoginition (OMR) system.',
+    url='https://github.com/meteo-team/oemer',
+    packages=setuptools.find_packages(),
+    package_data={'': ['*.json', '*.h5', 'sklearn_models/*.model']},
+    install_requires=[
+        'tensorflow-gpu',
+        'opencv-python',
+        'numpy==1.19.2',
+        'scipy==1.6.2',
+        'scikit-learn==0.24.2'
+    ],
+    entry_points={'console_scripts': ['oemer = oemer.ete:main']}
+)

@@ -1,2 +1,8 @@
 __pycache__/
 .git/
+build/
+dist/
+Oemer.egg-info/
+
+*.musicxml
+*.mp3
