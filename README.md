@@ -13,7 +13,7 @@ python setup.py install
 oemer --help
 ```
 
-## Packaing
+## Packaging
 ``` bash
 python setup.py bdist_wheel
 
