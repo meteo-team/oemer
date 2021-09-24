@@ -9,7 +9,13 @@ setuptools.setup(
     description='End-to-end Optical Music Recoginition (OMR) system.',
     url='https://github.com/meteo-team/oemer',
     packages=setuptools.find_packages(),
-    package_data={'': ['*.json', '*.h5', 'sklearn_models/*.model']},
+    package_data={
+    '': [
+            'sklearn_models/*.model',
+            'checkpoints/unet_big/*',
+            'checkpoints/seg_net/*',
+        ]
+    },
     install_requires=[
         'tensorflow-gpu',
         'opencv-python',

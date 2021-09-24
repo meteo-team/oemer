@@ -3,7 +3,7 @@ import numpy as np
 import scipy.ndimage
 
 from . import layers
-from .classifier import predict
+from .inference import predict
 from .utils import find_closest_staffs, get_global_unit_size, get_unit_size, get_logger
 from .bbox import (
     get_center,
