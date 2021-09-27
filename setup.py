@@ -19,6 +19,8 @@ setuptools.setup(
     install_requires=[
         'tensorflow-gpu',
         'opencv-python',
+        'matplotlib',
+        'pillow',
         'numpy==1.19.2',
         'scipy==1.6.2',
         'scikit-learn==0.24.2'
