@@ -118,7 +118,7 @@ def group_noteheads():
     return groups, nh_label
 
 
-def get_possible_nearby_gid(cur_note, group_map):
+def get_possible_nearby_gid(cur_note, group_map, scan_range_ratio=5):
     bbox = cur_note.bbox
     cen_x, cen_y = get_center(bbox)
     cur_gid = group_map[cen_y, cen_x]
@@ -153,14 +153,18 @@ def get_possible_nearby_gid(cur_note, group_map):
             cur_y += step
         return None, None
 
+    st1, st2 = find_closest_staffs(cen_x, cen_y)
+    y_upper = min(st1.y_upper, st2.y_upper)
+    y_lower = max(st1.y_lower, st2.y_lower)
+
     # Grid search up
     cur_y = bbox[1] - 1
-    y_bound = max(cur_y - 8 * unit_size, 0)
+    y_bound = max(cur_y - scan_range_ratio * unit_size, y_upper)
     gid_top, gty = search(cur_y, y_bound, -1)
 
     # Grid search down
     cur_y = bbox[3] + 1
-    y_bound = min(cur_y + 8 * unit_size, len(group_map)-1)
+    y_bound = min(cur_y + scan_range_ratio * unit_size, y_lower)
     gid_bt, gby = search(cur_y, y_bound, 1)
 
     if gid_top is not None and gid_bt is not None:

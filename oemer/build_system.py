@@ -7,11 +7,11 @@ from xml.etree.ElementTree import Element, SubElement
 
 import numpy as np
 
-from . import layers
-from .symbol_extraction import Barline, Clef, Sfn, Rest, SfnType, ClefType, RestType
-from .note_group_extraction import NoteGroup
-from .notehead_extraction import NoteHead, NoteType
-from .utils import get_global_unit_size, get_logger, get_total_track_nums
+from oemer import layers
+from oemer.symbol_extraction import Barline, Clef, Sfn, Rest, SfnType, ClefType, RestType
+from oemer.note_group_extraction import NoteGroup
+from oemer.notehead_extraction import NoteHead, NoteType
+from oemer.utils import get_global_unit_size, get_logger, get_total_track_nums
 
 
 logger = get_logger(__name__)
@@ -167,6 +167,7 @@ class Measure:
             else:
                 start_idx = 0
             end_idx = track_nums * 7 + 4  # There are at most 6 sharps/flats. Some tolerance are added.
+            end_idx = min(end_idx, len(self.symbols))
         else:
             return Key(0)
 

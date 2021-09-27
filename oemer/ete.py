@@ -136,15 +136,6 @@ def extract(args):
     layers.register_layer("staff_pred", staff)
     layers.register_layer("original_image", image)
 
-    # Update symbols prediction by considering both the original image
-    # and the prediction.
-    logger.info("Update the predicted symbols by the original image")
-    mix = polish_symbols(rgb_black_th=300)
-
-    # Register a layer that gruops regions with connected pixels
-    # region_map, _ = scipy.ndimage.label(mix)
-    # layers.register_layer('region_map', region_map)
-
     # ---- Extract staff lines and group informations ---- #
     logger.info("Extracting stafflines")
     staffs, zones = staff_extract()
