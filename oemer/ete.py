@@ -186,14 +186,18 @@ def extract(args):
         ff.write(xml)
 
 
-def main():
+def get_parser():
     parser = argparse.ArgumentParser("Oemer", description="End-to-end OMR")
     parser.add_argument("img_path", help="Path to the image.", type=str)
     parser.add_argument(
         "--save-cache",
         help="Save the model predictions and the next time won't need to predict again.",
         action='store_true')
+    return parser
 
+
+def main():
+    parser = get_parser()
     args = parser.parse_args()
 
     if not os.path.exists(args.img_path):
