@@ -17,7 +17,7 @@ setuptools.setup(
         ]
     },
     install_requires=[
-        'tensorflow-gpu',
+        'tensorflow-gpu==2.5.0',
         'opencv-python',
         'matplotlib',
         'pillow',
