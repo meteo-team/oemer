@@ -13,12 +13,21 @@ python setup.py install
 oemer --help
 ```
 
+Or download the built wheel file from the release and install
+``` bash
+# Go to the release page and download the .whl file from
+# the assets.
+
+# Replace the <version> to the correct version.
+pip install Oemer-<version>-py3-none-any.whl
+```
+
 ## Packaging
 ``` bash
 python setup.py bdist_wheel
 
 # Install from the wheel file
-pip install dist/Oemer-0.1.0-py3-none-any.whl
+pip install dist/Oemer-<version>-py3-none-any.whl
 ```
 
 ## Change log level
