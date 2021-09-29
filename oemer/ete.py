@@ -182,13 +182,21 @@ def extract(args):
     builder = MusicXMLBuilder(title=basename.capitalize())
     builder.build()
     xml = builder.to_musicxml()
-    with open(f"./{basename}.musicxml", "wb") as ff:
+
+    # ---- Write out the MusicXML ---- #
+    out_path = args.output_path
+    if not out_path.endswith(".musicxml"):
+        # Take the output path as the folder.
+        out_path = os.path.join(out_path, basename+".musicxml")
+
+    with open(out_path, "wb") as ff:
         ff.write(xml)
 
 
 def get_parser():
     parser = argparse.ArgumentParser("Oemer", description="End-to-end OMR")
     parser.add_argument("img_path", help="Path to the image.", type=str)
+    parser.add_argument("-o", "--output-path", help="Path to output the result file", type=str, default="./")
     parser.add_argument(
         "--save-cache",
         help="Save the model predictions and the next time won't need to predict again.",
