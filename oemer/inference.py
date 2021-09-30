@@ -4,9 +4,15 @@ from PIL import Image
 
 import cv2
 import numpy as np
-import tensorflow as tf
 
-from . import MODULE_PATH
+from oemer import MODULE_PATH
+
+
+use_tf = os.environ.get('INFERENCE_WITH_TF', False)
+if use_tf:
+    import tensorflow as tf
+else:
+    import onnxruntime as rt
 
 
 def resize_image(image: Image):
@@ -26,18 +32,28 @@ def resize_image(image: Image):
 
 
 def inference(model_path, img_path, step_size=128, batch_size=16, manual_th=None):
-    arch_path = os.path.join(model_path, "arch.json")
-    w_path = os.path.join(model_path, "weights.h5")
-    model = tf.keras.models.model_from_json(open(arch_path, "r").read())
-    model.load_weights(w_path)
-    input_shape = model.input_shape[1:]
+    if use_tf:
+        arch_path = os.path.join(model_path, "arch.json")
+        w_path = os.path.join(model_path, "weights.h5")
+        model = tf.keras.models.model_from_json(open(arch_path, "r").read())
+        model.load_weights(w_path)
+        input_shape = model.input_shape
+        output_shape = model.output_shape
+    else:
+        onnx_path = os.path.join(model_path, "model.onnx")
+        metadata = pickle.load(open(os.path.join(model_path, "metadata.pkl"), "rb"))
+        providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
+        sess = rt.InferenceSession(onnx_path, providers=providers)
+        output_names = metadata['output_names']
+        input_shape = metadata['input_shape']
+        output_shape = metadata['output_shape']
 
     # Collect data
     # Tricky workaround to avoid random mistery transpose when loading with 'Image'.
     image = cv2.imread(img_path)
     image = Image.fromarray(image).convert("RGB")
     image = np.array(resize_image(image))
-    win_size = input_shape[0]
+    win_size = input_shape[1]
     data = []
     for y in range(0, image.shape[0], step_size):
         if y + win_size > image.shape[0]:
@@ -53,11 +69,11 @@ def inference(model_path, img_path, step_size=128, batch_size=16, manual_th=None
     for idx in range(0, len(data), batch_size):
         print(f"{idx+1}/{len(data)} (step: {batch_size})", end="\r")
         batch = np.array(data[idx:idx+batch_size])
-        out = model.predict(batch)
+        out = model.predict(batch) if use_tf else sess.run(output_names, {'input': batch})[0]
         pred.append(out)
 
     # Merge prediction patches
-    output_shape = image.shape[:2] + (model.output_shape[-1],)
+    output_shape = image.shape[:2] + (output_shape[-1],)
     out = np.zeros(output_shape, dtype=np.float32)
     mask = np.zeros(output_shape, dtype=np.float32)
     hop_idx = 0
@@ -78,7 +94,7 @@ def inference(model_path, img_path, step_size=128, batch_size=16, manual_th=None
     if manual_th is None:
         class_map = np.argmax(out, axis=-1)
     else:
-        assert len(manual_th) == model.output_shape[-1]-1, f"{manual_th}, {model.output_shape[-1]}"
+        assert len(manual_th) == output_shape[-1]-1, f"{manual_th}, {output_shape[-1]}"
         class_map = np.zeros(out.shape[:2] + (len(manual_th),))
         for idx, th in enumerate(manual_th):
             class_map[..., idx] = np.where(out[..., idx+1]>th, 1, 0)
@@ -98,3 +114,7 @@ def predict(region, model_name):
     return m_info['class_map'][pred[0]]
 
 
+if __name__ == "__main__":
+    img_path = "/home/kohara/omr/test_imgs/wind2.jpg"
+    model_path = "./checkpoints/seg_net"
+    class_map, out = inference(model_path, img_path)
