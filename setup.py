@@ -17,7 +17,7 @@ setuptools.setup(
         ]
     },
     install_requires=[
-        'tensorflow-gpu==2.5.0',
+        'onnxruntime-gpu',
         'opencv-python',
         'matplotlib',
         'pillow',
@@ -25,5 +25,8 @@ setuptools.setup(
         'scipy==1.6.2',
         'scikit-learn==0.24.2'
     ],
+    extras_require={
+        'full': ['tensorflow-gpu', 'tf2onnx']
+    },
     entry_points={'console_scripts': ['oemer = oemer.ete:main']}
 )
