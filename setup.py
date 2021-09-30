@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name='Oemer',
-    version='0.1.2',
+    version='0.2.0',
     author='Meteo Corp.',
     author_email='contact@meteo.com.tw',
     description='End-to-end Optical Music Recoginition (OMR) system.',
