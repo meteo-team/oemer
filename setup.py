@@ -1,12 +1,16 @@
 import setuptools
 
 
+with open("README.md") as red:
+    ldest = red.read()
+
 setuptools.setup(
     name='Oemer',
     version='0.2.0',
     author='Meteo Corp.',
     author_email='contact@meteo.com.tw',
     description='End-to-end Optical Music Recoginition (OMR) system.',
+    long_description=ldest,
     url='https://github.com/meteo-team/oemer',
     packages=setuptools.find_packages(),
     package_data={
