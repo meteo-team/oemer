@@ -4,7 +4,6 @@ from pathlib import Path
 
 import tf2onnx
 import tensorflow as tf
-import onnxruntime as rt
 
 
 def convert(input_path, output_path=None):
