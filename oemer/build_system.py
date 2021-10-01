@@ -430,6 +430,7 @@ class KeyChange(Action):
 
     def perform(self, parent_elem=None) -> Element:
         self.ctx.key = self.key
+        self.init_sfn_state()
         elem = decode_key(self.key)
         if parent_elem is not None:
             parent_elem.append(elem)
@@ -915,8 +916,9 @@ def decode_note(note, clef_type, is_chord=False, voice=1) -> Element:
             alter.text = '-1'
 
     # Check the pitch is within A0~C8
-    if int(octave.text) <= 0 and step.text != "A" \
-            or int(octave.text) >= 8 and step.text != "C":
+    if (int(octave.text) < 0 or int(octave.text) > 8) \
+            or (int(octave.text) == 0 and step.text != "A") \
+            or (int(octave.text) == 8 and step.text != "C"):
         return None
 
     # Rhythm type
