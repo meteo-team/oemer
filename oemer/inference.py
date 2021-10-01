@@ -8,7 +8,7 @@ import numpy as np
 from oemer import MODULE_PATH
 
 
-use_tf = os.environ.get('INFERENCE_WITH_TF', False)
+use_tf = os.environ.get('INFERENCE_WITH_TF', "false") == "true"
 if use_tf:
     import tensorflow as tf
 else:
