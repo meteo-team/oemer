@@ -825,6 +825,7 @@ def get_rest(duration):
 
 def get_chroma_pitch(pos, clef_type):
     order = G_CLEF_POS_TO_PITCH if clef_type == ClefType.G_CLEF else F_CLEF_POS_TO_PITCH
+    pos = int(pos)
     return order[pos%7] if pos >= 0 else order[pos%-7]
 
 
@@ -895,7 +896,7 @@ def decode_note(note, clef_type, is_chord=False, voice=1) -> Element:
     alter = SubElement(pitch, 'alter')
     octave = SubElement(pitch, 'octave')
     alter.text = '0'
-    pos = note.staff_line_pos
+    pos = int(note.staff_line_pos)
     if clef_type == ClefType.G_CLEF:
         order = G_CLEF_POS_TO_PITCH
         oct_offset = 4

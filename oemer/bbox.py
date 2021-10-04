@@ -15,8 +15,8 @@ def get_bbox(data):
 
 
 def get_center(bbox):
-    cen_y = round((bbox[1] + bbox[3]) / 2)
-    cen_x = round((bbox[0] + bbox[2]) / 2)
+    cen_y = int(round((bbox[1] + bbox[3]) / 2))
+    cen_x = int(round((bbox[0] + bbox[2]) / 2))
     return cen_x, cen_y
 
 

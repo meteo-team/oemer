@@ -92,12 +92,12 @@ class NoteHead:
 
 
 def morph_notehead(pred, unit_size):
-    small_size = round(unit_size / 3)
+    small_size = int(round(unit_size / 3))
     small_ker = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (small_size, small_size))
     pred = cv2.erode(cv2.dilate(pred.astype(np.uint8), small_ker), small_ker)
     size = (
-        round(unit_size*nhc.NOTEHEAD_MORPH_WIDTH_FACTOR),
-        round(unit_size*nhc.NOTEHEAD_MORPH_HEIGHT_FACTOR)
+        int(round(unit_size*nhc.NOTEHEAD_MORPH_WIDTH_FACTOR)),
+        int(round(unit_size*nhc.NOTEHEAD_MORPH_HEIGHT_FACTOR))
     )
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, size)
     img = cv2.erode(pred.astype(np.uint8), kernel)
@@ -146,7 +146,7 @@ def check_bbox_size(bbox, noteheads, unit_size):
             tmp_new.extend(check_bbox_size(box, noteheads, unit_size))
         new_bbox = tmp_new
     else:
-        num_notes = round(h / note_h)
+        num_notes = int(round(h / note_h))
         if num_notes > 0:
             sub_h = h // num_notes
             for i in range(num_notes):

@@ -23,7 +23,7 @@ def scan_dot(symbols, note_id_map, bbox, unit_size, min_count, max_count):
         # Find the right most bound for scan the dot.
         # Should have width less than unit_size, and can't
         # touch the nearby note.
-        cur_scan_line = note_id_map[start_y:bbox[3], right_bound]
+        cur_scan_line = note_id_map[int(start_y):int(bbox[3]), int(right_bound)]
         ids = set(np.unique(cur_scan_line))
         if -1 in ids:
             ids.remove(-1)
@@ -34,13 +34,13 @@ def scan_dot(symbols, note_id_map, bbox, unit_size, min_count, max_count):
             break
 
     left_bound = bbox[2] + round(unit_size*0.4)
-    dot_region = symbols[start_y:bbox[3], left_bound:right_bound]
+    dot_region = symbols[int(start_y):int(bbox[3]), int(left_bound):int(right_bound)]
     pixels = np.sum(dot_region)
     if min_count <= pixels <= max_count:
         color = (255, random.randint(0, 255), random.randint(0, 255))
-        cv2.rectangle(dot_img, (left_bound, start_y), (right_bound, bbox[3]), color, 1)
+        cv2.rectangle(dot_img, (int(left_bound), int(start_y)), (int(right_bound), int(bbox[3])), color, 1)
         msg = f"{min_count:.2f}/{pixels:.2f}/{max_count:.2f}"
-        cv2.putText(dot_img, msg, (bbox[0], bbox[3]+30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 1)
+        cv2.putText(dot_img, msg, (int(bbox[0]), int(bbox[3])+30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 1)
         return True
 
     # color = (255, random.randint(0, 255), random.randint(0, 255))
@@ -326,6 +326,11 @@ def scan_beam_flag(
     min_width_ratio=0.25,
     max_width_ratio=0.9):
 
+    start_x = int(start_x)
+    start_y = int(start_y)
+    end_x = int(end_x)
+    end_y = int(end_y)
+
     cv2.line(beam_img, (start_x, start_y), (end_x, start_y), (66, 245, 212), 1, cv2.LINE_8)
     cv2.line(beam_img, (start_x, end_y), (end_x, end_y), (66, 245, 212), 1, cv2.LINE_8)
 
@@ -558,7 +563,7 @@ def parse_rhythm(beam_map, map_info, agree_th=0.15):
         )
 
         #cv2.rectangle(beam_img, (gbox[0], gbox[1]), (gbox[2], gbox[3]), (255, 0, 255), 1)
-        cv2.putText(beam_img, str(count), (cen_x, gbox[3]+2), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 1)
+        cv2.putText(beam_img, str(count), (int(cen_x), int(gbox[3])+2), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 1)
 
         # Assign note label
         for nid in group.note_ids:

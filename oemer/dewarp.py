@@ -144,7 +144,7 @@ def connect_nearby_grid_group(gg_map, grid_groups, grid_map, grids, ref_count=8,
         for i in range(max_step):
             tar_x = (-i - 1) * step_size
             cen_y = model.predict([[tar_x]])[0]  # Interpolate y center
-            y = round(cen_y - h / 2)
+            y = int(round(cen_y - h / 2))
             region = new_gg_map[y:y+h, end_x-step_size:end_x]  # Area to check
             unique, counts = np.unique(region, return_counts=True)
             labels = set(unique)  # Overlapped grid group IDs
@@ -202,6 +202,8 @@ def connect_nearby_grid_group(gg_map, grid_groups, grid_map, grids, ref_count=8,
                         max(gg.bbox[2], box[2]),
                         max(gg.bbox[3], box[3])
                     )
+                    gg.bbox = [int(bb) for bb in gg.bbox]
+                    box = [int(bb) for bb in box]
                     grids.append(grid)
                     new_gg_map[box[1]:box[3], box[0]:box[2]] = gg.id
 
@@ -236,7 +238,7 @@ def build_mapping(gg_map, min_width_ratio=0.4):
                 meta_idx = np.where(x==ux)[0]
                 sub_y = y[meta_idx]
                 cen_y = round(np.mean(sub_y))
-                coords_y[target_y, ux] = cen_y
+                coords_y[int(target_y), int(ux)] = cen_y
                 points.append((target_y, ux))
 
     # Add corner case
@@ -267,7 +269,7 @@ def estimate_coords(staff_pred):
     coords_y, points = build_mapping(new_gg_map)
 
     logger.debug("Dewarping")
-    vals = coords_y[points[:, 0], points[:, 1]]
+    vals = coords_y[points[:, 0].astype(int), points[:, 1].astype(int)]
     grid_x, grid_y = np.mgrid[0:gg_map.shape[0]:1, 0:gg_map.shape[1]:1]
     coords_y = griddata(points, vals, (grid_x, grid_y), method='linear')
 

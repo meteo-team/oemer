@@ -352,7 +352,7 @@ def gen_clefs(bboxes, labels):
 
 def get_nearby_note_id(box, note_id_map):
     cen_x, cen_y = get_center(box)
-    unit_size = round(get_unit_size(cen_x, cen_y))
+    unit_size = int(round(get_unit_size(cen_x, cen_y)))
     nid = None
     for x in range(box[2], box[2]+unit_size):
         if note_id_map[cen_y, x] != -1:
@@ -413,7 +413,7 @@ def gen_rests(bboxes, labels):
         rr.track = st1.track
         rr.group = st1.group
 
-        unit_size = round(get_unit_size(*get_center(box)))
+        unit_size = int(round(get_unit_size(*get_center(box))))
         dot_range = range(box[2]+1, box[2]+unit_size)
         dot_region = symbols[box[1]:box[3], dot_range]
         if 0 < np.sum(dot_region) < unit_size**2 / 7:

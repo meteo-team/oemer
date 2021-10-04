@@ -133,7 +133,7 @@ def get_possible_nearby_gid(cur_note, group_map, scan_range_ratio=5):
                 break
             elif step < 0 and cur_y < y_bound:
                 break
-            pxs = group_map[cur_y, start_x:end_x]
+            pxs = group_map[int(cur_y), int(start_x):int(end_x)]
             gids = set(np.unique(pxs))
             if 0 in gids:
                 gids.remove(0)
