@@ -6,6 +6,9 @@ run `export INFERENCE_WITH_TF=true` and make sure there is TF installed.
 
 ![](figures/tabi_mix.jpg)
 
+https://user-images.githubusercontent.com/24308057/136168551-2e705c2d-8cf5-4063-826f-0e179f54c772.mp4
+
+
 
 ## Quick Start
 ``` bash
