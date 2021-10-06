@@ -71,5 +71,54 @@ For the dewarping, there can be summarized to six steps as shown in the below fi
 
 <p align='center'>
     <img width="100%" src="figures/dewarp_steps.png">
-    <p align='center'>Steps to dewarp the skewed image.</p>
+    <p align='center'>Steps to dewarp the curved image.</p>
 </p>
+
+
+The dewarping map will be apply to all the predicted informations by the two models.
+
+### Staffline Extraction
+
+After dewarping, stafflines will be parsed. This step plays the most important role,
+as this is the foundation to all the later steps. Ths most important information is 
+`unit_size`, which is the interval between stafflines. It's obvious that all the sizes,
+distance-related information in a music score all relate to the interval, or gap, of stafflines.
+
+The stafflines are processed part-by-part horizontally, as shown below:
+
+<p align='center'>
+    <img width="50%" src="figures/staffs.jpg">
+</p>
+
+For each part, the algorithm finds the lines by accumulating positive pixels by rows.
+After summarizing the counts for each row, we get the following statistics:
+
+<p align='center'>
+    <img width="50%" src="figures/staffline_peaks.png">
+</p>
+
+The algorithm then picks all the peaks and applying additional rules to filter out false positive peaks.
+The final picked true positive peaks (stafflines) are marked with red dots.
+
+Another important information is **tracks** and **groups**. For a conventional piano score, there are
+two tracks, each for left and right hand, respectively, and forms a group. For this information,
+the algorithm *foresees* the symbols predictions and parse the barlines to infer possible
+track numbers.
+
+After extraction, the informations are stored into list of `Staff` instances. Example 
+`Staff` instance representation is as follow:
+
+``` bash
+Staff(
+	Lines: 5  # Contains 5 stafflines.
+	Center: 1835.3095048449181  # Y-center of this block of staff.
+	Upper bound: 1806  # Upper bound of this block of staff (originated from left-top corner).
+	Lower bound: 1865  # Lower bound of this block of staff (originated from left-top corner).
+	Unit size: 14.282656749749265  # Average interval of stafflines.
+	Track: 1  # For two-handed piano score, there are two tracks.
+	Group: 3  # For two-handed piano score, two tracks are grouped into one.
+	Is interpolation: False  # Is this block of staff information interpolated.
+	Slope: -0.0005315575840202954  # Estimated slope
+)
+```
+
