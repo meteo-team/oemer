@@ -42,3 +42,19 @@ export LOG_LEVEL=debug
 ```
 
 
+## Technical Details
+
+Oemer first predicts different informations with two image semantic segmentation models: one for
+predicting stafflines and all other symbols; and second model for more detailed symbol informations,
+including noteheads, clefs, stems, rests, sharp, flat, natural.
+
+
+<figure align='center'>
+    <img width="70%" src="figures/tabi_model1.jpg">
+    <figcaption>Model one for predicting stafflines (red) and all other symbols (blue).</figcaption>
+</figure>
+<figure align='center'>
+    <img width="70%" src="figures/tabi_model2.jpg">
+    <figcaption>Model two for predicting noteheads (green), clefs/sharp/flat/natural (pink), and stems/rests (blue).</figcaption>
+</figure>
+
