@@ -101,7 +101,12 @@ def extract(args):
         stems_rests = pred["stems_rests"]
     else:
         # Make predictions
+        if args.use_tf:
+            ori_inf_type = os.environ.get("INFERENCE_WITH_TF", None)
+            os.environ["INFERENCE_WITH_TF"] = "true"
         staff, symbols, stems_rests, notehead, clefs_keys = generate_pred(str(img_path))
+        if args.use_tf:
+            os.environ["INFERENCE_WITH_TF"] = ori_inf_type
         if args.save_cache:
             data = {
                 'staff': staff,
@@ -197,6 +202,7 @@ def get_parser():
     parser = argparse.ArgumentParser("Oemer", description="End-to-end OMR")
     parser.add_argument("img_path", help="Path to the image.", type=str)
     parser.add_argument("-o", "--output-path", help="Path to output the result file", type=str, default="./")
+    parser.add_argument("--use-tf", help="Use Tensorflow for model inference. Default is to use Onnxruntime.", action="store_true")
     parser.add_argument(
         "--save-cache",
         help="Save the model predictions and the next time won't need to predict again.",

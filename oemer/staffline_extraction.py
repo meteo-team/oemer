@@ -8,10 +8,10 @@ from scipy.signal import find_peaks
 from sklearn.cluster import KMeans
 from sklearn.linear_model import LinearRegression
 
-from . import layers
-from . import exceptions as E
-from .utils import get_logger
-from .bbox import find_lines, get_bbox, get_center
+from oemer import layers
+from oemer import exceptions as E
+from oemer.utils import get_logger
+from oemer.bbox import find_lines, get_bbox, get_center
 
 
 logger = get_logger(__name__)
@@ -692,15 +692,15 @@ def naive_get_unit_size(staffs, x, y):
 
 if __name__ == "__main__":
     f_name = "last"
-    #f_name = "tabi"
+    f_name = "tabi"
     #f_name = "tabi_page2"
     #f_name = "PXL2"
     #f_name = "girl"
     #f_name = "1"
 
-    pred = pickle.load(open(f"{f_name}.pkl", "rb"))['staff']
+    pred = pickle.load(open(f"../test_imgs/{f_name}.pkl", "rb"))['staff']
     layers.register_layer("staff_pred", pred)
-    rr = range(10, 193)
+    rr = range(1130, 1400)
     #staffs, zones = extract()
     #staffs = extract_part(pred[..., rr], 0)
     lines, norm = extract_line(pred[..., rr], 0)

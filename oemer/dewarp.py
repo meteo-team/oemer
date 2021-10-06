@@ -6,9 +6,10 @@ import numpy as np
 import scipy.ndimage
 from scipy.interpolate import interp1d, griddata
 from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
 
-from .morph import morph_open
-from .utils import get_logger
+from oemer.morph import morph_open
+from oemer.utils import get_logger
 
 
 logger = get_logger(__name__)
@@ -288,8 +289,8 @@ if __name__ == "__main__":
     #f_name = "tabi"
     img_path = f"../test_imgs/{f_name}.jpg"
 
-    #img_path = "../test_imgs/Chihiro/7.jpg"
-    img_path = "../test_imgs/Gym/2.jpg"
+    img_path = "../test_imgs/Chihiro/7.jpg"
+    #img_path = "../test_imgs/Gym/2.jpg"
 
     ori_img = cv2.imread(img_path)
     f_name, ext = os.path.splitext(os.path.basename(img_path))
@@ -324,3 +325,47 @@ if __name__ == "__main__":
         out[..., i] = cv2.remap(out[..., i].astype(np.float32), grid_y.astype(np.float32), mapping.astype(np.float32), cv2.INTER_CUBIC)
 
     mix = np.hstack([ori_img, out])
+
+
+import random
+def teaser():
+    plt.clf()
+    plt.rcParams['axes.titlesize'] = 'medium'
+    plt.subplot(231)
+    plt.title("Predict")
+    plt.axis('off')
+    plt.imshow(st_pred, cmap="Greys")
+
+    plt.subplot(232)
+    plt.title("Morph")
+    plt.axis('off')
+    plt.imshow(pred, cmap='Greys')
+
+    plt.subplot(233)
+    plt.title("Quantize")
+    plt.axis('off')
+    plt.imshow(grid_map>0, cmap='Greys')
+
+    plt.subplot(234)
+    plt.title("Group")
+    plt.axis('off')
+    ggs = set(np.unique(gg_map))
+    ggs.remove(-1)
+    _gg_map = np.ones(gg_map.shape+(3,), dtype=np.uint8) * 255
+    for i in ggs:
+        ys, xs = np.where(gg_map==i)
+        for c in range(3):
+            v = random.randint(0, 255)
+            _gg_map[ys, xs, c] = v
+    plt.imshow(_gg_map)
+
+    plt.subplot(235)
+    plt.title("Connect")
+    plt.axis('off')
+    plt.imshow(new_gg_map>0, cmap='Greys')
+
+    plt.subplot(236)
+    plt.title("Dewarp")
+    plt.axis('off')
+    plt.imshow(out)
+
