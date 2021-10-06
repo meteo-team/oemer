@@ -44,17 +44,32 @@ export LOG_LEVEL=debug
 
 ## Technical Details
 
+This section describes the detail techniques for solving the OMR problem. The overall flow can also be found in [oemer/ete.py](https://github.com/meteo-team/oemer/blob/main/oemer/ete.py), which is also the entrypoint for `oemer` command.
+
+### Model Prediction
 Oemer first predicts different informations with two image semantic segmentation models: one for
 predicting stafflines and all other symbols; and second model for more detailed symbol informations,
 including noteheads, clefs, stems, rests, sharp, flat, natural.
 
 
-<figure align='center'>
+<p align='center'>
     <img width="70%" src="figures/tabi_model1.jpg">
-    <figcaption>Model one for predicting stafflines (red) and all other symbols (blue).</figcaption>
-</figure>
-<figure align='center'>
+    <p align='center'>Model one for predicting stafflines (red) and all other symbols (blue).</p>
+</p>
+<p align='center'>
     <img width="70%" src="figures/tabi_model2.jpg">
-    <figcaption>Model two for predicting noteheads (green), clefs/sharp/flat/natural (pink), and stems/rests (blue).</figcaption>
-</figure>
+    <p align='center'>Model two for predicting noteheads (green), clefs/sharp/flat/natural (pink), and stems/rests (blue).</p>
+</p>
 
+### Dewarping
+
+Before proceed to recognizing the symbols, one may need to deskew the photo first since 
+the later process assumes the stafflines are all horizontally aligned and the position 
+of noteheads, rests and all other things are all depends on this assumption.
+
+For the dewarping, there can be summarized to six steps as shown in the below figure.
+
+<p align='center'>
+    <img width="100%" src="figures/dewarp_steps.png">
+    <p align='center'>Steps to dewarp the skewed image.</p>
+</p>
