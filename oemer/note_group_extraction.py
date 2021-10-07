@@ -2,10 +2,10 @@ import cv2
 import numpy as np
 import scipy.ndimage
 
-from . import layers
-from .inference import predict
-from .utils import find_closest_staffs, get_global_unit_size, get_unit_size, get_logger
-from .bbox import (
+from oemer import layers
+from oemer.inference import predict
+from oemer.utils import find_closest_staffs, get_global_unit_size, get_unit_size, get_logger
+from oemer.bbox import (
     get_center,
     merge_nearby_bbox,
     get_bbox,
@@ -405,11 +405,11 @@ if __name__ == "__main__":
 
     unit_size = get_global_unit_size()
     logger.info("Grouping noteheads")
-    groups, a_map = group_noteheads()
+    a_groups, a_map = group_noteheads()
     logger.info("Analyzing stem direction")
-    groups, b_map = parse_stem_direction(groups, a_map)
+    b_groups, b_map = parse_stem_direction(a_groups, a_map)
     logger.info("Instanitiating note groups")
-    groups, c_map = gen_groups(groups, b_map)
+    groups, c_map = gen_groups(b_groups, b_map)
 
     bboxes = [g.bbox for g in groups]
     out = draw_bounding_boxes(bboxes, notehead)

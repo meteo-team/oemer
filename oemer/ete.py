@@ -152,9 +152,9 @@ def extract(args):
     notes = note_extract()
 
     # Add a new layer (w * h * 4), indicating bbox of each pixel.
-    layers.register_layer('bboxes', np.zeros(symbols.shape + (4,), dtype=np.uint8))
-    bboxes = [note.bbox for note in notes]
-    register_notehead_bbox(bboxes)
+    # layers.register_layer('bboxes', np.zeros(symbols.shape + (4,), dtype=np.uint8))
+    # bboxes = [note.bbox for note in notes]
+    # register_notehead_bbox(bboxes)
 
     # Array of 'NoteHead' instances.
     layers.register_layer('notes', np.array(notes))

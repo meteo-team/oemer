@@ -109,16 +109,17 @@ After extraction, the informations are stored into list of `Staff` instances. Ex
 `Staff` instance representation is as follow:
 
 ``` bash
+# Example instance of oemer.staffline_extraction.Staff
 Staff(
-	Lines: 5  # Contains 5 stafflines.
-	Center: 1835.3095048449181  # Y-center of this block of staff.
-	Upper bound: 1806  # Upper bound of this block of staff (originated from left-top corner).
-	Lower bound: 1865  # Lower bound of this block of staff (originated from left-top corner).
-	Unit size: 14.282656749749265  # Average interval of stafflines.
-	Track: 1  # For two-handed piano score, there are two tracks.
-	Group: 3  # For two-handed piano score, two tracks are grouped into one.
-	Is interpolation: False  # Is this block of staff information interpolated.
-	Slope: -0.0005315575840202954  # Estimated slope
+    Lines: 5  # Contains 5 stafflines.
+    Center: 1835.3095048449181  # Y-center of this block of staff.
+    Upper bound: 1806  # Upper bound of this block of staff (originated from left-top corner).
+    Lower bound: 1865  # Lower bound of this block of staff (originated from left-top corner).
+    Unit size: 14.282656749749265  # Average interval of stafflines.
+    Track: 1  # For two-handed piano score, there are two tracks.
+    Group: 3  # For two-handed piano score, two tracks are grouped into one.
+    Is interpolation: False  # Is this block of staff information interpolated.
+    Slope: -0.0005315575840202954  # Estimated slope
 )
 ```
 
@@ -157,8 +158,8 @@ the result.
 
 
 ``` bash
-
-Notehead 12(  # The number refers to note ID
+# Example instance of oemer.notehead_extraction.NoteHead
+Notehead 12 (  # The number refers to note ID
     Points: 123  # Number of pixels for this notehead.
     Bounding box: [649 402 669 419]
     Stem up: None  # Direction of the stem, will be infered in later steps.
@@ -173,4 +174,32 @@ Notehead 12(  # The number refers to note ID
     Sharp/Flat/Natural: None  # Accidental type of this note. Will be infered in later steps.
 )
 
+```
+
+### Note Group Extraction
+
+This step groups individual noteheads into chords that should be played at the same time.
+
+A quick snippet of the final result is shown below:
+
+<p align='center'>
+    <img width="70%" src="figures/note_group.png">
+</p>
+
+The first step is to group the noteheads according mainly to their distance vertically, and then
+the overlapping and a small-allowed distance horizontally.
+
+After the initial grouping, the next is to parse the stem direction and further use this
+information to refine the grouping results. Since there could be noteheads that are vertically
+very close, but have different directions of stems. This indicates that there are two
+different melody lines happening at the same time. This is specifically being considered
+in `oemer` and taken care of over all the system.
+
+``` bash
+# Example instance of oemer.note_group_extraction.NoteGroup
+Note Group No. 0 / Group: 0 / Track: 0 :(
+    Note count: 1
+    Stem up: True
+    Has stem: True
+)
 ```
