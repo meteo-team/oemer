@@ -6,7 +6,7 @@ with open("README.md") as red:
 
 setuptools.setup(
     name='Oemer',
-    version='0.2.0',
+    version='0.2.1',
     author='Meteo Corp.',
     author_email='contact@meteo.com.tw',
     description='End-to-end Optical Music Recoginition (OMR) system.',

@@ -3,6 +3,7 @@ __pycache__/
 build/
 dist/
 Oemer.egg-info/
+checkpoints/
 
 *.musicxml
 *.mp3
