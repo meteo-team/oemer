@@ -97,11 +97,11 @@ After summarizing the counts for each row, we get the following statistics:
     <img width="50%" src="figures/staffline_peaks.png">
 </p>
 
-The algorithm then picks all the peaks and applying additional rules to filter out false positive peaks.
+The algorithm then picks all the peaks and applies additional rules to filter out false positive peaks.
 The final picked true positive peaks (stafflines) are marked with red dots.
 
 Another important information is **tracks** and **groups**. For a conventional piano score, there are
-two tracks, each for left and right hand, respectively, and forms a group. For this information,
+two tracks, for left and right hand, respectively, and forms a group. For this information,
 the algorithm *foresees* the symbols predictions and parse the barlines to infer possible
 track numbers.
 
@@ -122,3 +122,55 @@ Staff(
 )
 ```
 
+### Notehead Extraction
+
+The next step is to extract noteheads, which is the second important information to be parsed.
+
+Steps to extract noteheads are breifly illustrated in the following figure:
+
+<p align='center'>
+    <img width="100%" src="figures/notehead.png">
+</p>
+
+
+One of the output channel of the second model predicts the noteheads map, as can be seen in the
+top-middle image. The algorithm then pre-process it with morphing to refine the information.
+Worth noticing here is that we force the model to predict 'hollow' notes to be solid noteheads,
+which thus the information won't be eliminated by the morphing.
+
+Next, the algorithm detects the bounding boxes of each noteheads. Since the noteheads could
+overlap with each other, the initial detection could thus contain more than one noteheads. 
+To deal with such situation, the algorithm integrate the information `unit_size` to approximate
+how many noteheads are actually there, in both horizontal and vertical direction. The result
+is shown in the bottom-left figure.
+
+As we force the model to predict both half and whole notes to be solid noteheads, we need to
+setup rules to decide whether they are actually half or whole notes. This could be done by
+simply compare the region coverage rate between the prediction and the original image.
+The result is shown in the bottom-middle figure.
+
+Finally, the last thing to be parsed is the position of noteheads on stafflines. The origin
+starts from the bottom line space with (D4 for treble clef, and F3 for bass clef) index 0.
+There could be negative numbers as well. In this step, noteheads are also being assigned with
+track and group number, indicating which stave they belong to. The bottom-right figure shows
+the result.
+
+
+``` bash
+
+Notehead 12(  # The number refers to note ID
+    Points: 123  # Number of pixels for this notehead.
+    Bounding box: [649 402 669 419]
+    Stem up: None  # Direction of the stem, will be infered in later steps.
+    Track: 1
+    Group: 0
+    Pitch: None  # Actual pitch in MIDI number, will be infered in later steps.
+    Dot: False  # Whether there is dot for this note.
+    Label: NoteType.HALF_OR_WHOLE  # Initial guess of the rhythm type.
+    Staff line pos: 4  # Position on stafflines. Counting from D4 for treble clef.
+    Is valid: True  # Flag for marking if the note is valid.
+    Note group ID: None  # Note group ID this note belong to. Will be infered in later steps.
+    Sharp/Flat/Natural: None  # Accidental type of this note. Will be infered in later steps.
+)
+
+```

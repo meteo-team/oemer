@@ -1,13 +1,15 @@
+from __future__ import absolute_import
+
 import enum
 
 import cv2
 import numpy as np
 import scipy.ndimage
 
-from . import layers
-from .constant import NoteHeadConstant as nhc
-from .bbox import get_bbox, get_center, merge_nearby_bbox, rm_merge_overlap_bbox, to_rgb_img
-from .utils import get_unit_size, find_closest_staffs, get_global_unit_size, get_logger
+from oemer import layers
+from oemer.constant import NoteHeadConstant as nhc
+from oemer.bbox import get_bbox, get_center, merge_nearby_bbox, rm_merge_overlap_bbox, to_rgb_img
+from oemer.utils import get_unit_size, find_closest_staffs, get_global_unit_size, get_logger
 
 
 logger = get_logger(__name__)
@@ -476,7 +478,8 @@ def draw_notes(notes, ori_img):
         x_offset = 0
         y_offset = 0
         cv2.rectangle(img, (x1+x_offset, y1+y_offset), (x2+x_offset, y2+y_offset), (0, 255, 0), 2)
-        cv2.putText(img, str(note.stem_right)[0], (x2+2, y2), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 1)
+        if note.label:
+            cv2.putText(img, note.label.name[0], (x2+2, y2), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 1)
     return img
 
 
@@ -503,33 +506,3 @@ if __name__ == "__main__":
 
     notes = extract()
     rr = draw_notes(notes, aa)
-
-
-    #### Test Zone ####
-    # unit_size = get_global_unit_size()
-    # note = morph_notehead(notehead, unit_size=unit_size)
-    # bboxes = get_bbox(note)
-    # result_bboxes = []
-    # for box in bboxes:
-    #     unit_size = get_unit_size(get_center(box))
-    #     box = check_bbox_size(box, notehead, unit_size)
-    #     result_bboxes.extend(box)
-
-    # fbox = filter_notehead_bbox(result_bboxes, note)
-
-    # aa = draw_bounding_boxes(result_bboxes, img)
-    # bb = draw_bounding_boxes(fbox, img)
-
-    # merged_box = merge_nearby_bbox(fbox, distance=unit_size*2, y_factor=5)
-    # mm = draw_bounding_boxes(merged_box, img)
-
-    # hbox = []
-    # for x1, y1, x2, y2 in merged_box:
-    #     region = symbols[y1:y2, x1:x2]
-    #     count = region[region>0].size
-    #     filled = fill_hole(region)
-    #     f_count = filled[filled>0].size
-    #     ratio = f_count / count
-    #     if ratio > 1.2:
-    #         hbox.append((x1, y1, x2, y2))
-    # hh = draw_bounding_boxes(hbox, img)
