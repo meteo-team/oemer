@@ -4,12 +4,12 @@ import cv2
 import numpy as np
 import scipy.ndimage
 
-from . import layers
-from . import exceptions as E
-from .inference import predict
-from .utils import get_global_unit_size, slope_to_degree, get_unit_size, get_logger, find_closest_staffs
-from .general_filtering_rules import filter_out_of_range_bbox, filter_out_small_area
-from .bbox import (
+from oemer import layers
+from oemer import exceptions as E
+from oemer.inference import predict
+from oemer.utils import get_global_unit_size, slope_to_degree, get_unit_size, get_logger, find_closest_staffs
+from oemer.general_filtering_rules import filter_out_of_range_bbox, filter_out_small_area
+from oemer.bbox import (
     merge_nearby_bbox,
     rm_merge_overlap_bbox,
     find_lines,

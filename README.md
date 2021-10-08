@@ -183,7 +183,7 @@ This step groups individual noteheads into chords that should be played at the s
 A quick snippet of the final result is shown below:
 
 <p align='center'>
-    <img width="70%" src="figures/note_group.png">
+    <img width="80%" src="figures/note_group.png">
 </p>
 
 The first step is to group the noteheads according mainly to their distance vertically, and then
@@ -203,3 +203,36 @@ Note Group No. 0 / Group: 0 / Track: 0 :(
     Has stem: True
 )
 ```
+
+### Symbol Extraction
+
+After noteheads being extracted, there remains other important musical annotations need
+to be parsed, such as keys, accidentals, clefs, and rests.
+As mentioned before, the second model predicts different pairs of symbols in the same channel
+for the ease of training. Additional separation of the information is thus required.
+
+#### Clefs & SFN
+For the clefs/sfn (short for sharp, flat, natural) pair, the initial intention for grouping
+them together, is that it's easier to distinguish the difference through their size and
+the region coverage rate (tp_pixels / bounding_box_size). This is exactly what the
+algorithm being implemented to recognize them. After the clef/sfn classification,
+Further recognition leverages SVM models to classify them into the correct symbol
+types (e.g. gclef, sharp, flat).
+
+<p align='center'>
+    <img width="80%" src="figures/clefs_sfns.png">
+</p>
+
+``` bash
+# Example instance of oemer.symbol_extraction.Clef
+Clef: F_CLEF / Track: 1 / Group: 1
+
+# Example instance of oemer.symbol_extraction.Sfn
+SFN: NATURAL / Note ID: 186 / Is key: False / Track: 0 / Group: 0
+```
+
+#### Barlines
+
+
+#### Rests
+
