@@ -46,6 +46,8 @@ export LOG_LEVEL=debug
 
 This section describes the detail techniques for solving the OMR problem. The overall flow can also be found in [oemer/ete.py](https://github.com/meteo-team/oemer/blob/main/oemer/ete.py), which is also the entrypoint for `oemer` command.
 
+Disclaimer: All descriptions below are simplfied compare to the actual implementation. Only core concepts are covered.
+
 ### Model Prediction
 Oemer first predicts different informations with two image semantic segmentation models: one for
 predicting stafflines and all other symbols; and second model for more detailed symbol informations,
@@ -273,3 +275,30 @@ Representation of the rest instance:
 # Example instance of oemer.symbol_extraction.Rest
 Rest: EIGHTH / Has dot: None / Track: 1 / Group: 1
 ```
+
+
+### Rhythm Extraction
+
+This is probably the most time consuming part except for the model inference.
+There are two things that effect the rhythm: dot and beams/flags. The later two (beams, flags)
+are considered the same thing in the extraction. In this step, model one's prediction
+is used, including both channels (stafflines, symbols).
+
+The algorithm first parse the information of dot for each note. The symbols map is first
+subtracted by other prediction maps (e.g. stems, noteheads, clefs, etc.), and then use
+the remaining part for scanning the dots. Since the region of a dot is small, the algorithm
+morphs the map first. After amplifying the dot information, the algorithm scans a small region
+nearby every detected noteheads, calculate the ratio of positive samples to the region, and
+determine whether there is a dot by a given certain threshold.
+
+<p align='center'>
+    <img width="80%" src="figures/dots.png">
+</p>
+
+Here comes the most difficult and critical part amongst all steps, since rhythm hugely
+influence the listening experience.
+Few steps are included to extract beams/flags:
+- Initial parsing
+- Check overlapping with noteheads and stems
+- Correlate beams/flags to note groups
+- Assign rhythm types to note groups and **update the note grouping** when neccessary.

@@ -5,12 +5,12 @@ import cv2
 import numpy as np
 import scipy.ndimage
 
-from . import layers
-from .utils import get_unit_size, get_logger
-from .constant import NoteHeadConstant as nhc
-from .bbox import get_center, get_rotated_bbox, to_rgb_img
-from .notehead_extraction import NoteType
-from .morph import morph_open, morph_close
+from oemer import layers
+from oemer.utils import get_unit_size, get_logger
+from oemer.constant import NoteHeadConstant as nhc
+from oemer.bbox import get_center, get_rotated_bbox, to_rgb_img
+from oemer.notehead_extraction import NoteType
+from oemer.morph import morph_open, morph_close
 
 
 logger = get_logger(__name__)
