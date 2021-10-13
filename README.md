@@ -212,6 +212,7 @@ As mentioned before, the second model predicts different pairs of symbols in the
 for the ease of training. Additional separation of the information is thus required.
 
 #### Clefs & SFN
+
 For the clefs/sfn (short for sharp, flat, natural) pair, the initial intention for grouping
 them together, is that it's easier to distinguish the difference through their size and
 the region coverage rate (tp_pixels / bounding_box_size). This is exactly what the
@@ -233,6 +234,42 @@ SFN: NATURAL / Note ID: 186 / Is key: False / Track: 0 / Group: 0
 
 #### Barlines
 
+Extracts barlines using both models' output. The algorithm first uses the second model's prediction,
+the channel contains rests and 'stems' (which should be 'straight lines' actually). Since the
+previous step while extracting note groups has already used the 'stem' information, so the rest
+part of unused 'stems' should be barlines. However, due to some bugs of the training dataset,
+the model always predicts barlines, that should be longer than stems, into the same length of
+stems. It is thus the algorithm needs the first model's output to extract the 'actual' barlines
+with real lengths. By overlapping the two different information, the algorithm can easily filter out
+most of non-barline objects in the prediction map. Further extraction applies additional rules to
+estimate barlines. The result can be seen as follow:
+
+<p align='center'>
+    <img width="80%" src="figures/barlines.png">
+</p>
+
+And the representation of a barline instance:
+``` bash
+# Example instance of oemer.symbol_extraction.Barline
+Barline / Group: 3
+```
+
+There is no track information of barline since one barline is supposed to 
+occupy multiple tracks.
 
 #### Rests
 
+Having used all the 'stems' information in the output channel during the last few
+steps, the rest symbols should be 'rests'. List of rules are also applied to
+filter the symbols. The recognition of the rest types are done by using trained SVM model.
+As a result, above process outputs the following result:
+
+<p align='center'>
+    <img width="80%" src="figures/rests.png">
+</p>
+
+Representation of the rest instance:
+``` bash
+# Example instance of oemer.symbol_extraction.Rest
+Rest: EIGHTH / Has dot: None / Track: 1 / Group: 1
+```
