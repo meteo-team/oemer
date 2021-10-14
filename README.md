@@ -305,7 +305,7 @@ Few steps are included to extract beams/flags:
 Brief summary of these steps are illustrated as below:
 
 <p align='center'>
-    <img Height="80%" src="figures/rhythm.png">
+    <img width="80%" src="figures/rhythm.png">
 </p>
 
 The first step is, as mentioned before, to distill beams/flags from all the symbols predicted
