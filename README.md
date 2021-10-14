@@ -301,3 +301,31 @@ Few steps are included to extract beams/flags:
 - Check overlapping with noteheads and stems
 - Correlate beams/flags to note groups
 - Assign rhythm types to note groups and **update the note grouping** when neccessary.
+
+Brief summary of these steps are illustrated as below:
+
+<p align='center'>
+    <img Height="80%" src="figures/rhythm.png">
+</p>
+
+The first step is, as mentioned before, to distill beams/flags from all the symbols predicted
+by model one. By subtracting with the second model's output, and apply some simple filtering rules,
+we get the top-left figure.
+
+Next, the algorithm picks the regions that overlap with known noteheads and stems. We also
+get an initial relation between note groups and beams/flags. Both information are kept for
+later usage. As a result, the algorithm generates the top-right figure.
+
+The third step is to refine the relation between note groups and beams. Since 
+there could be stem of one note group that doesn't overlap with the beam above/below it, and
+thus not being included in the same bounding box.  Here, bounding box includes both note group and
+beams/flags. This can be adjusted by further scans the region under the bounding box, check
+if there contains unknown note groups, and update the relation. Figure is shown in bottom-left.
+
+Finally, the algorithm has all neccessary information to conclude the rhythm types for
+each note group now. The algorithm scans a small region for counting how many beams/flags there are.
+The region is bounded by the center of the x-axis of the note group, with extention to both left and
+right side; the y-axis by the bounding box and the boundary of the note in the note group that
+closest to the beams (depending on the direction of the stem). Figure on the bottom-right shows
+the region of bounding boxes (green), the scanning range (blue), and the final number of beams/flags
+detected by the algorithm. Numeber of rules are also applied to refine the counting result.

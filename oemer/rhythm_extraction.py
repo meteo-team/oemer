@@ -7,8 +7,7 @@ import scipy.ndimage
 
 from oemer import layers
 from oemer.utils import get_unit_size, get_logger
-from oemer.constant import NoteHeadConstant as nhc
-from oemer.bbox import get_center, get_rotated_bbox, to_rgb_img
+from oemer.bbox import get_center, get_rotated_bbox, to_rgb_img, draw_bounding_boxes
 from oemer.notehead_extraction import NoteType
 from oemer.morph import morph_open, morph_close
 
@@ -331,8 +330,8 @@ def scan_beam_flag(
     end_x = int(end_x)
     end_y = int(end_y)
 
-    cv2.line(beam_img, (start_x, start_y), (end_x, start_y), (66, 245, 212), 1, cv2.LINE_8)
-    cv2.line(beam_img, (start_x, end_y), (end_x, end_y), (66, 245, 212), 1, cv2.LINE_8)
+    cv2.line(beam_img, (start_x, start_y), (end_x, start_y), (42, 110, 200), 2, cv2.LINE_8)
+    cv2.line(beam_img, (start_x, end_y), (end_x, end_y), (42, 110, 200), 2, cv2.LINE_8)
 
     counter = [0 for _ in range(end_x-start_x)]
 
@@ -488,6 +487,8 @@ def parse_rhythm(beam_map, map_info, agree_th=0.15):
 
     global beam_img
     beam_img = to_rgb_img(np.where(beam_map+notehead>0, 1, 0))
+    # bboxes = [v['bbox'] for v in map_info.values()]
+    # beam_img = draw_bounding_boxes(bboxes, beam_img)
 
     # Start parsing the rhythm
     bin_beam_map = np.where(beam_map>0, 1, 0)
@@ -563,7 +564,7 @@ def parse_rhythm(beam_map, map_info, agree_th=0.15):
         )
 
         #cv2.rectangle(beam_img, (gbox[0], gbox[1]), (gbox[2], gbox[3]), (255, 0, 255), 1)
-        cv2.putText(beam_img, str(count), (int(cen_x), int(gbox[3])+2), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 1)
+        cv2.putText(beam_img, str(count), (int(cen_x), int(gbox[3])+2), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1)
 
         # Assign note label
         for nid in group.note_ids:

@@ -256,8 +256,8 @@ def parse_clefs_keys(clefs_keys, unit_size, clef_size_ratio=3.5, max_clef_tp_rat
         usize = get_unit_size(*get_center(box))
         area_size_ratio = w * h / usize**2
         area_tp_ratio = region[region>0].size / (w * h)
-        cv2.rectangle(cs_img, (box[0], box[1]), (box[2], box[3]), (0, 255, 0), 1)
-        cv2.putText(cs_img, f"{area_tp_ratio:.2f} / {area_size_ratio:.2f}", (box[2]+2, box[3]), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
+        #cv2.rectangle(cs_img, (box[0], box[1]), (box[2], box[3]), (0, 255, 0), 1)
+        #cv2.putText(cs_img, f"{area_tp_ratio:.2f} / {area_size_ratio:.2f}", (box[2]+2, box[3]), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
         if area_size_ratio > clef_size_ratio \
                 and area_tp_ratio < max_clef_tp_ratio:
             clef_box.append(box)
