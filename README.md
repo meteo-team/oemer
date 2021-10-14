@@ -46,6 +46,8 @@ export LOG_LEVEL=debug
 
 This section describes the detail techniques for solving the OMR problem. The overall flow can also be found in [oemer/ete.py](https://github.com/meteo-team/oemer/blob/main/oemer/ete.py), which is also the entrypoint for `oemer` command.
 
+Disclaimer: All descriptions below are simplfied compare to the actual implementation. Only core concepts are covered.
+
 ### Model Prediction
 Oemer first predicts different informations with two image semantic segmentation models: one for
 predicting stafflines and all other symbols; and second model for more detailed symbol informations,
@@ -233,6 +235,69 @@ SFN: NATURAL / Note ID: 186 / Is key: False / Track: 0 / Group: 0
 
 #### Barlines
 
+Extracts barlines using both models' output. The algorithm first uses the second model's prediction,
+the channel contains rests and 'stems' (which should be 'straight lines' actually). Since the
+previous step while extracting note groups has already used the 'stem' information, so the rest
+part of unused 'stems' should be barlines. However, due to some bugs of the training dataset,
+the model always predicts barlines, that should be longer than stems, into the same length of
+stems. It is thus the algorithm needs the first model's output to extract the 'actual' barlines
+with real lengths. By overlapping the two different information, the algorithm can easily filter out
+most of non-barline objects in the prediction map. Further extraction applies additional rules to
+estimate barlines. The result can be seen as follow:
+
+<p align='center'>
+    <img width="80%" src="figures/barlines.png">
+</p>
+
+And the representation of a barline instance:
+``` bash
+# Example instance of oemer.symbol_extraction.Barline
+Barline / Group: 3
+```
+
+There is no track information of barline since one barline is supposed to 
+occupy multiple tracks.
 
 #### Rests
 
+Having used all the 'stems' information in the output channel during the last few
+steps, the rest symbols should be 'rests'. List of rules are also applied to
+filter the symbols. The recognition of the rest types are done by using trained SVM model.
+As a result, above process outputs the following result:
+
+<p align='center'>
+    <img width="80%" src="figures/rests.png">
+</p>
+
+Representation of the rest instance:
+``` bash
+# Example instance of oemer.symbol_extraction.Rest
+Rest: EIGHTH / Has dot: None / Track: 1 / Group: 1
+```
+
+
+### Rhythm Extraction
+
+This is probably the most time consuming part except for the model inference.
+There are two things that effect the rhythm: dot and beams/flags. The later two (beams, flags)
+are considered the same thing in the extraction. In this step, model one's prediction
+is used, including both channels (stafflines, symbols).
+
+The algorithm first parse the information of dot for each note. The symbols map is first
+subtracted by other prediction maps (e.g. stems, noteheads, clefs, etc.), and then use
+the remaining part for scanning the dots. Since the region of a dot is small, the algorithm
+morphs the map first. After amplifying the dot information, the algorithm scans a small region
+nearby every detected noteheads, calculate the ratio of positive samples to the region, and
+determine whether there is a dot by a given certain threshold.
+
+<p align='center'>
+    <img width="80%" src="figures/dots.png">
+</p>
+
+Here comes the most difficult and critical part amongst all steps, since rhythm hugely
+influence the listening experience.
+Few steps are included to extract beams/flags:
+- Initial parsing
+- Check overlapping with noteheads and stems
+- Correlate beams/flags to note groups
+- Assign rhythm types to note groups and **update the note grouping** when neccessary.
