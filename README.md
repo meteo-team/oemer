@@ -1,5 +1,7 @@
 # Oemer (End-to-end OMR)
 
+# This repository is no longer maintained. Please refer to [BreezeWhite/oemer](https://github.com/BreezeWhite/oemer) for newer updates.
+
 End-to-end Optical Music Recognition system build on deep learning models and machine learning techniques.
 Default to use **Onnxruntime** for model inference. If you want to use **tensorflow** for the inference,
 run `export INFERENCE_WITH_TF=true` and make sure there is TF installed.
